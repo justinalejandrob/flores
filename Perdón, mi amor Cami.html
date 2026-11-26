@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perdón, mi amor Cami</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: dark;
+  --wine:#2b0a1c; --plum:#5a1238; --blush:#ffe3ec; --rose:#f78fb3; --petal:#ffb3cd;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100%;overflow-x:hidden;
+  background:radial-gradient(ellipse at 50% 62%,var(--plum) 0%,var(--wine) 70%) var(--wine);
+  color:var(--blush);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.5rem;padding:1.2rem 1rem 1.6rem;
+}
+.msg{text-align:center;line-height:1;opacity:0;animation:rise 2.8s ease 7.2s forwards;position:relative;z-index:2}
+.msg h1{margin:0;font-family:'Great Vibes','Brush Script MT',cursive;font-weight:400;
+  font-size:clamp(2.6rem,10vw,4.6rem);color:var(--blush);text-shadow:0 0 28px rgba(247,143,179,.55)}
+.msg .name{display:block;margin-top:.1em;font-family:'Great Vibes','Brush Script MT',cursive;
+  font-size:clamp(4.2rem,17vw,8rem);color:var(--petal);text-shadow:0 0 36px rgba(255,120,170,.7)}
+@keyframes rise{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.stage{width:min(88vw,400px);height:auto;max-height:52vh;cursor:pointer;position:relative;z-index:2;
+  filter:drop-shadow(0 18px 30px rgba(0,0,0,.45))}
+.bloom,.grow{transform-origin:0 0;animation:bloom 2.8s cubic-bezier(.2,.9,.25,1.1) both;animation-delay:var(--d)}
+.grow{animation-name:grow;animation-duration:2s}
+@keyframes bloom{from{transform:scale(0) rotate(-50deg);opacity:0}60%{opacity:1}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes grow{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.stem{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.6s ease forwards;animation-delay:var(--d)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.wrap{opacity:0;animation:fade 2.2s ease 4.6s forwards}
+@keyframes fade{to{opacity:1}}
+.btn{position:relative;z-index:2;margin-top:.4rem;padding:.6rem 1.4rem;border-radius:999px;
+  border:1px solid rgba(255,227,236,.45);background:rgba(255,179,205,.1);color:var(--blush);
+  font:italic 500 1.15rem 'Cormorant Garamond',Georgia,serif;cursor:pointer;opacity:0;animation:fade 1.6s ease 9.5s forwards}
+.btn:hover{background:rgba(255,179,205,.22)}
+.btn:focus-visible,.stage:focus-visible{outline:2px solid var(--petal);outline-offset:4px;border-radius:12px}
+.petal{position:fixed;top:-8vh;z-index:1;pointer-events:none;border-radius:100% 0 100% 0;
+  background:linear-gradient(135deg,#ffd0e0,#f06292);opacity:.85;
+  animation:fall var(--t) linear var(--dl) forwards}
+@keyframes fall{
+  0%{transform:translate3d(0,0,0) rotate(0)}
+  50%{transform:translate3d(var(--x),55vh,0) rotate(200deg)}
+  100%{transform:translate3d(calc(var(--x)*-.6),112vh,0) rotate(420deg);opacity:.2}}
+.heart{position:fixed;bottom:-8vh;z-index:1;pointer-events:none;color:var(--c);opacity:0;line-height:1;text-shadow:0 0 14px rgba(255,120,170,.65);animation:floatup var(--t) ease-in var(--dl) forwards}
+@keyframes floatup{0%{transform:translate3d(0,0,0) scale(.6);opacity:0}15%{opacity:.95}50%{transform:translate3d(var(--x),-55vh,0) scale(1)}100%{transform:translate3d(calc(var(--x)*-.7),-118vh,0) scale(1.15);opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .msg,.btn,.wrap{animation:none;opacity:1}
+  .bloom,.grow{animation:none}
+  .stem{animation:none;stroke-dashoffset:0}
+  .petal,.heart{display:none}
+}
+</style>
+</head>
+<body>
+<div class="msg">
+  <h1>Perdón, mi amor</h1>
+  <span class="name">Cami</span>
+</div>
+
+<svg id="b" class="stage" viewBox="0 0 400 520" role="img" aria-label="Un ramo de rosas rosadas" tabindex="0"></svg>
+
+<button class="btn" id="more" type="button">Lluvia de pétalos</button>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+  function shade(hex,f){
+    var n=parseInt(hex.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+    return 'rgb('+Math.round(r*f)+','+Math.round(g*f)+','+Math.round(b*f)+')';
+  }
+  var svg=document.getElementById('b');
+  var defs=el('defs',{},svg);
+
+  var tones=[
+    ['#ffc4d8','#f78fb3','#e0527f'],
+    ['#ffd9e5','#ffb0cb','#f2709b'],
+    ['#f9a8c5','#ec6c9a','#c93a6b']
+  ];
+  tones.forEach(function(row,t){row.forEach(function(c,l){
+    var g=el('radialGradient',{id:'g'+t+l,cx:'.5',cy:'.3',r:'.85'},defs);
+    el('stop',{offset:'0',
+      'stop-color':c},g);
+    el('stop',{offset:'1','stop-color':shade(c,.78)},g);
+  });});
+  var lg=el('linearGradient',{id:'leaf',x1:'0',y1:'0',x2:'1',y2:'0'},defs);
+  el('stop',{offset:'0','stop-color':'#2f6b4a'},lg);el('stop',{offset:'1','stop-color':'#5aa37a'},lg);
+  var pg=el('linearGradient',{id:'paper',x1:'0',y1:'0',x2:'0',y2:'1'},defs);
+  el('stop',{offset:'0','stop-color':'#fff0f5'},pg);el('stop',{offset:'1','stop-color':'#ffc2d6'},pg);
+
+  var wrapBack=el('g',{class:'wrap'},svg);
+  el('path',{d:'M58 285 Q200 250 342 285 L216 508 L184 508Z',fill:'#e86f9b'},wrapBack);
+
+  // gypsophila
+  var dots=el('g',{},svg);
+  for(var i=0;i<18;i++){
+    var a=(-172+i*9.6)*Math.PI/180, rad=150+(i%3)*14;
+    var x=200+rad*Math.cos(a), y=225+rad*Math.sin(a)*.92;
+    var s=el('path',{d:'M200 300 Q'+(200+(x-200)*.5)+' '+(y+60)+' '+x+' '+y,fill:'none',stroke:'rgba(255,255,255,.35)','stroke-width':'.9',pathLength:'1',class:'stem'},dots);
+    s.style.setProperty('--d',(.4+i*.12)+'s');
+    var c=el('g',{transform:'translate('+x+' '+y+')'},dots);
+    var cc=el('g',{class:'grow'},c);cc.style.setProperty('--d',(2.2+i*.12)+'s');
+    for(var k=0;k<4;k++){el('circle',{cx:Math.cos(k*1.6)*3.2,cy:Math.sin(k*1.6)*3.2,r:'2.6',fill:'#fff6fa',opacity:'.95'},cc)}
+  }
+
+  // roses data: x, y, radius, tone, rot
+  var roses=[
+    [85,250,40,2,10],[315,250,40,0,-15],[128,176,44,1,25],[272,176,44,2,-8],
+    [200,124,48,0,5],[150,262,42,0,-20],[250,262,42,2,18],[200,214,52,1,0]
+  ];
+
+  // stems
+  var stems=el('g',{},svg);
+  roses.forEach(function(r,i){
+    var p=el('path',{d:'M200 440 Q'+(200+(r[0]-200)*.35)+' '+(r[1]+120)+' '+r[0]+' '+r[1],fill:'none',stroke:'#3d8059','stroke-width':'5','stroke-linecap':'round',pathLength:'1',class:'stem'},stems);
+    p.style.setProperty('--d',(.2+i*.22)+'s');
+  });
+
+  // leaves
+  var leaves=[[104,236,-160,1],[296,236,-20,1],[96,150,-135,.9],[304,150,-45,.9],[165,92,-110,.8],[235,92,-70,.8],[60,300,-175,.8],[340,300,-5,.8]];
+  var lv=el('g',{},svg);
+  leaves.forEach(function(l,i){
+    var o=el('g',{transform:'translate('+l[0]+' '+l[1]+') rotate('+l[2]+') scale('+l[3]+')'},lv);
+    var g=el('g',{class:'grow'},o);g.style.setProperty('--d',(2+i*.25)+'s');
+    el('path',{d:'M0 0 C8 -18 36 -18 52 0 C36 18 8 18 0 0Z',fill:'url(#leaf)'},g);
+    el('path',{d:'M2 0 L46 0',stroke:'rgba(255,255,255,.35)','stroke-width':'1',fill:'none'},g);
+  });
+
+  // roses
+  function rose(parent,r,t,rot){
+    var g=el('g',{transform:'rotate('+rot+')'},parent);
+    el('circle',{r:r*1.02,cy:r*.06,fill:'#a3224f',opacity:'.35'},g);
+    var layers=[{n:6,d:.52,rx:.54,ry:.5,off:0},{n:5,d:.35,rx:.44,ry:.42,off:36},{n:4,d:.19,rx:.32,ry:.32,off:20},{n:3,d:.07,rx:.2,ry:.22,off:60}];
+    layers.forEach(function(L,li){
+      var gi=Math.min(li,2);
+      for(var i=0;i<L.n;i++){
+        var pg=el('g',{transform:'rotate('+(L.off+i*360/L.n)+')'},g);
+        el('ellipse',{cx:0,cy:-L.d*r,rx:L.rx*r,ry:L.ry*r,fill:'url(#g'+t+gi+')',stroke:shade(tones[t][gi],.7),'stroke-width':'.7','stroke-opacity':'.7'},pg);
+      }
+    });
+    el('path',{d:'M'+(-r*.09)+' 0 a'+(r*.09)+' '+(r*.09)+' 0 1 1 '+(r*.09)+' '+(r*.09)+' a'+(r*.06)+' '+(r*.06)+' 0 0 1 '+(-r*.04)+' '+(-r*.05),stroke:shade(tones[t][2],.6),'stroke-width':'1.2',fill:'none','stroke-linecap':'round'},g);
+  }
+  var rs=el('g',{},svg);
+  roses.forEach(function(r,i){
+    var o=el('g',{transform:'translate('+r[0]+' '+r[1]+')'},rs);
+    var b=el('g',{class:'bloom'},o);
+    b.style.setProperty('--d',(1.4+i*.6)+'s');
+    rose(b,r[2],r[3],r[4]);
+  });
+
+  // front paper + ribbon + bow
+  var fw=el('g',{class:'wrap'},svg);
+  el('path',{d:'M62 292 Q200 345 338 292 L218 508 Q200 516 182 508Z',fill:'url(#paper)'},fw);
+  el('path',{d:'M200 330 L200 505 M150 322 L190 500 M250 322 L210 500',stroke:'rgba(194,24,91,.16)','stroke-width':'1.3',fill:'none'},fw);
+  el('path',{d:'M146 404 Q200 424 254 404 L250 424 Q200 446 150 424Z',fill:'#c2185b'},fw);
+  el('path',{d:'M200 428 C150 395 128 440 158 458 C176 466 192 444 200 428Z',fill:'#e2457d'},fw);
+  el('path',{d:'M200 428 C250 395 272 440 242 458 C224 466 208 444 200 428Z',fill:'#e2457d'},fw);
+  el('path',{d:'M198 430 L170 492 L186 484 L196 498Z',fill:'#c2185b'},fw);
+  el('path',{d:'M202 430 L230 492 L214 484 L204 498Z',fill:'#c2185b'},fw);
+  el('circle',{cx:200,cy:430,r:'8',fill:'#ad1457'},fw);
+
+  // falling petals
+  function shower(n){
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    for(var i=0;i<n;i++){
+      var p=document.createElement('div');p.className='petal';
+      var s=9+Math.random()*13;
+      p.style.cssText='left:'+(Math.random()*100)+'vw;width:'+s+'px;height:'+(s*1.3)+'px;';
+      p.style.setProperty('--x',(Math.random()*120-60)+'px');
+      p.style.setProperty('--t',(12+Math.random()*8)+'s');
+      p.style.setProperty('--dl',(Math.random()*2.5)+'s');
+      document.body.appendChild(p);
+      (function(e){setTimeout(function(){e.remove()},24000)})(p);
+    }
+  }
+  var hc=['#ff8fb8','#ff5c93','#ffc2d6','#e0527f'];
+  function hearts(n){
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    for(var i=0;i<n;i++){
+      var h=document.createElement('span');h.className='heart';h.textContent='\u2665';
+      h.style.left=(Math.random()*96)+'vw';
+      h.style.fontSize=(14+Math.random()*26)+'px';
+      h.style.setProperty('--c',hc[Math.floor(Math.random()*hc.length)]);
+      h.style.setProperty('--x',(Math.random()*100-50)+'px');
+      h.style.setProperty('--t',(10+Math.random()*8)+'s');
+      h.style.setProperty('--dl',(Math.random()*4)+'s');
+      document.body.appendChild(h);
+      (function(e){setTimeout(function(){e.remove()},23000)})(h);
+    }
+  }
+  setTimeout(function(){shower(18);hearts(14)},6500);
+  setInterval(function(){shower(5);hearts(5)},7000);
+  function burst(){shower(30);hearts(26)}
+  document.getElementById('more').addEventListener('click',burst);
+  svg.addEventListener('click',burst);
+  svg.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();burst()}});
+})();
+</script>
+</body>
+</html>
